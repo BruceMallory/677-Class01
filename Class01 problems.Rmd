@@ -1,0 +1,67 @@
+---
+title: "677 Class01 problems"
+author: "Bruce Mallory"
+date: "1/26/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## G&S probs 1.1-13, 15, 16 and 1.2-6, 7, 12, 14, 17, 25
+
+13) The psychologist Tversky and his colleagues11 say that about four out of five people will answer (a) to the following question:
+A certain town is served by two hospitals. In the larger hospital about 45 babies are born each day, and in the smaller hospital 15 babies are born each day. Although the overall proportion of boys is about 50 percent, the actual proportion at either hospital may be more or less than 50 percent on any day.
+At the end of a year, which hospital will have the greater number of days on
+which more than 60 percent of the babies born were boys?
+(a) the large hospital (b) the small hospital
+(c) neither—the number of days will be about the same.
+Assume that the probability that a baby is a boy is .5 (actual estimates make this more like .513). Decide, by simulation, what the right answer is to the question. Can you suggest why so many people go wrong?
+
+```{r }
+n1 = 0
+n2 = 0
+for (i in 1:365) {
+  h1 <- rbinom(45, 1, .5)
+  prop1 <- sum(h1) / 45
+  if (prop1 > .60) {
+    n1 = n1 + 1
+  }
+  h2 <- rbinom(15, 1, .5)
+  prop2 <- sum(h2) / 15
+  if (prop2 > .60) {
+    n2 = n2 + 1
+  }
+}
+print(paste("Days when the large hospital had more than 60% boys born:", n1))
+print(paste("Days when the small hospital had more than 60% boys born:", n2))
+print("Most people assuume with 45 chances for getting a boy that there is more possibility to get lots of boys.  And they ignore the relationship between sample size and variability.")
+```
+
+15) Tversky and his colleagues studied the records of 48 of the Philadelphia 76ers basketball games in the 1980–81 season to see if a player had times when he was hot and every shot went in, and other times when he was cold and barely able to hit the backboard. The players estimated that they were about 25 percent more likely to make a shot after a hit than after a miss. In fact, the opposite was true—the 76ers were 6 percent more likely to score after a miss than after a hit. Tversky reports that the number of hot and cold streaks was about what one would expect by purely random effects. Assuming that a player has a fifty-fifty chance of making a shot and makes 20 shots a game, estimate by simulation the proportion of the games in which the player will have a streak of 5 or more hits.
+
+```{r }
+streaks <- 0
+for (games in 1:48) {
+  game <- rbinom(20, 1, .5)
+  for (i in 1:16) {
+    streak <- 0
+    for (j in i:(i + 4)) {
+      if (game[j] == 1) {
+        streak = streak + 1
+      }
+    }
+    if (streak > 4) {
+      streaks = streaks + 1
+    }
+  }
+}
+print(
+  paste(
+    "Out of the", games, "games, the player had a streak of 5 or more,",
+    round(100 * streaks / games),
+    "% of those games."
+  )
+)
+```
