@@ -43,8 +43,9 @@ print("Most people assuume with 45 chances for getting a boy that there is more 
 
 ```{r }
 streaks <- 0
-for (games in 1:48) {
+for (games in 1:480) {
   game <- rbinom(20, 1, .5)
+  #game
   for (i in 1:16) {
     streak <- 0
     for (j in i:(i + 4)) {
@@ -54,6 +55,7 @@ for (games in 1:48) {
     }
     if (streak > 4) {
       streaks = streaks + 1
+      #need to break out of this loop so I don't count the number of streaks (thus possibly double counting), but rather count the number of games!!
     }
   }
 }
@@ -64,4 +66,51 @@ print(
     "% of those games."
   )
 )
+```
+16) Estimate, by simulation, the average number of children there would be in a family if all people had children until they had a boy. Do the same if all people had children until they had at least one boy and at least one girl. How many more children would you expect to find under the second scheme than under the first in 100,000 families? (Assume that boys and girls are equally likely.)
+
+```{r}
+family_size <- (rep(0, 100000))
+for (i in 1:100000) {
+  kids <- 1
+  repeat {
+    kids <-  kids + 1
+    if (rbinom(1, 1, .5) == 1) {
+      break
+    }
+  }
+  family_size[i] <- kids
+}
+avg_fam_size_1 <- round(mean(family_size), 3)
+print(
+  paste(
+    "If families were 'built' by waiting for the first boy to be born, the average family size would be",
+    avg_fam_size_1,
+    "kids."
+  )
+)
+
+family_size <- (rep(0, 100000))
+for (i in 1:100000) {
+  kids <- 1
+  family <- c()
+  
+  repeat {
+    kids <-  kids + 1
+    family <- append(family, rbinom(1, 1, .5))
+    if ((mean(family) != 1) & (mean(family) != 0)) {
+      break
+    }
+  }
+  family_size[i] <- kids
+}
+avg_fam_size_2 <- round(mean(family_size), 3)
+print(
+  paste(
+    "If families were 'built' by waiting for at least one boy and at least one girl to be born, the average family size would be",
+    avg_fam_size_2,
+    "kids."
+  )
+)
+print(paste("That means, following the second scheme, for 100,000 families, there would be", 100000*(avg_fam_size_2-avg_fam_size_1), "more kids born."))
 ```
